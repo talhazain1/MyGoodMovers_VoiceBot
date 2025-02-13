@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+Flask-Cors
+python-dateutil
+email-validator
+twilio
+APScheduler
+googlemaps
+python-dotenv
+openai==0.28.0

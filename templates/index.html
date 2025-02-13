@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Good Movers - AI Voice Bot</title>
+  <!-- Google Fonts (optional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" 
+    rel="stylesheet"
+  >
+  <style>
+    /* Keyframes for fade-in-up animation */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Pulsing animation for the button on hover (optional) */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #cbe8f2, #fff); /* Subtle gradient */
+      font-family: 'Poppins', Arial, sans-serif;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 100px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #2c3e50;
+    }
+
+    select, 
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+
+    select:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background: #3498db; /* Primary button color */
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      background: #2980b9; /* Darker shade */
+      animation: pulse 0.7s infinite;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-style: italic;
+      color: #555;
+      text-align: center;
+      min-height: 25px; /* Ensure space for status messages */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .container {
+        margin: 50px 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Get a Call from My Good Movers' AI Agent</h2>
+    <div class="form-group">
+      <label for="country">Select Country</label>
+      <select id="country">
+        <option value="+1">United States (+1)</option>
+        <option value="+44">United Kingdom (+44)</option>
+        <option value="+91">India (+91)</option>
+        <option value="+61">Australia (+61)</option>
+        <option value="+1">Canada (+1)</option>
+        <option value="+92">Pakistan (+92)</option>
+        <!-- Add more countries as needed -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="phone">Enter Phone Number</label>
+      <input type="text" id="phone" placeholder="Enter phone number">
+    </div>
+    <button id="getCall">Get a Call</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    document.getElementById("getCall").addEventListener("click", function() {
+      var countryCode = document.getElementById("country").value;
+      var phoneNumber = document.getElementById("phone").value.trim();
+      
+      if (phoneNumber === "") {
+        alert("Please enter a phone number.");
+        return;
+      }
+      
+      var fullNumber = countryCode + phoneNumber;
+      var statusEl = document.getElementById("status");
+      statusEl.textContent = "Initiating call to " + fullNumber + "...";
+
+      fetch("/initiate_call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ phone_number: fullNumber })
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        if (data.error) {
+          statusEl.textContent = "Error: " + data.error;
+        } else {
+          statusEl.textContent = "Call initiated! Call SID: " + data.call_sid;
+        }
+      })
+      .catch(function(error) {
+        statusEl.textContent = "Error: " + error;
+      });
+    });
+  </script>
+</body>
+</html>
